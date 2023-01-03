@@ -6,9 +6,14 @@ bot = Bot(config.TOKEN)
 dp = Dispatcher(bot)
 
 HELP_COMMAND = '''
-/help - список команд
-/start - начало работы
+<b>/start</b> <em>- Run tha Bot!</em>
+<b>/help</b> <em>- show some help</em>
+<b>/give</b> <em>- Give me some</em>
 '''
+
+
+async def on_startup_msg(_):
+    print('Bot is running')
 
 
 @dp.message_handler(commands=['start', 'старт'])
@@ -19,7 +24,7 @@ async def help_command(message: types.Message):
 
 @dp.message_handler(commands=['help', 'помощь'])
 async def help_command(message: types.Message):
-    await message.reply(text=HELP_COMMAND)
+    await message.answer(HELP_COMMAND, parse_mode='HTML')
     await message.delete()
 
 
@@ -29,21 +34,42 @@ async def description_command(message: types.Message):
     await message.delete()
 
 
+@dp.message_handler(commands=['give'])
+async def send_sticker(message: types.Message):
+    await message.answer('What is it? 👇🏻')
+    await bot.send_sticker(message.from_user.id, sticker='CAACAgUAAxkBAAEHHGBjtEA8BvZS2jNkA-jZn8jXxCAijQAChQMAAukKyANnDaiEsg4V0S0E')
+
+
+@dp.message_handler(commands=['❤️'])
+async def black_heart(message: types.Message):
+    await message.answer('🖤')
+
+
+@dp.message_handler()
+async def check_zero(message: types.Message):
+    if '0' in message.text:
+        await message.answer('OFF')
+    elif '1' in message.text:
+        await message.answer('ON')
+    else:
+        await message.answer(message.text)
+
+
 # @dp.message_handler()
 # async def echo(message: types.Message):
 #     await message.answer(text=message.text)
 
 
-@dp.message_handler()
-async def echo(message: types.Message):
-    if 'Hello' in message.text:
-        await message.answer(text='Привет, привет!')
-    else:
-        await message.reply(text='А здороваться?')
+# @dp.message_handler()
+# async def echo2(message: types.Message):
+#     if 'Hello' in message.text:
+#         await message.answer(text='Привет, привет!')
+#     else:
+#         await message.reply(text='А здороваться?')
 
 
 # @dp.message_handler()
-# async def echo(message: types.Message):
+# async def echo3(message: types.Message):
 #     if 'Hello' in message.text:
 #         await message.answer(text=message.text)
 
@@ -54,10 +80,23 @@ async def echo(message: types.Message):
 
 
 # @dp.message_handler()
-# async def echo(message: types.Message):
+# async def echo4(message: types.Message):
 #     if message.text.count(' ') == 1:
 #         await message.answer(text=message.text)
 
 
+# @dp.message_handler()
+# async def count_chars(message: types.Message):
+#     await message.reply(str(message.text.count('❤️')))
+
+
+# @dp.message_handler()
+# async def have_a_heart(message: types.Message):
+#     if '❤️' in message.text or message.text == '❤️':
+#         await message.reply('🖤')
+#     else:
+#         await message.reply(message.text)
+
+
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    executor.start_polling(dp, on_startup=on_startup_msg)
