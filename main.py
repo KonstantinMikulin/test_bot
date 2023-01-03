@@ -55,6 +55,13 @@ async def check_zero(message: types.Message):
         await message.answer(message.text)
 
 
+@dp.message_handler(content_types=['sticker'])
+async def get_id(message: types.Message):
+    await message.answer(message.sticker.file_id)
+
+
+
+
 # @dp.message_handler()
 # async def echo(message: types.Message):
 #     await message.answer(text=message.text)
