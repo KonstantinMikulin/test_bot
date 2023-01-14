@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 import string
 import config
 
@@ -11,14 +12,23 @@ HELP_COMMAND = '''
 <b>/give</b> <em>- Give me some</em>
 '''
 
+keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
+                               one_time_keyboard=True)
+button1 = KeyboardButton('/help')
+button2 = KeyboardButton('/start')
+button3 = KeyboardButton('/description')
+keyboard.add(button1).add(button2).add(button3)
+
 
 async def on_startup_msg(_):
     print('Bot is running')
 
 
-@dp.message_handler(commands=['start', 'старт'])
-async def help_command(message: types.Message):
-    await message.answer(text='Welcome')
+@dp.message_handler(commands='start')
+async def start_command(message: types.Message):
+    await bot.send_message(message.from_user.id,
+                           text='Welcome',
+                           reply_markup=keyboard)
     await message.delete()
 
 
