@@ -17,7 +17,7 @@ keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
 button1 = KeyboardButton('/help')
 button2 = KeyboardButton('/start')
 button3 = KeyboardButton('/description')
-keyboard.add(button1).add(button2).add(button3)
+keyboard.add(button1).insert(button2).add(button3)
 
 
 async def on_startup_msg(_):
