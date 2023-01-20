@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from random import randrange
 import string
 import config
 
@@ -17,6 +18,7 @@ keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
 button1 = KeyboardButton('/help')
 button2 = KeyboardButton('/start')
 button3 = KeyboardButton('/description')
+
 keyboard.add(button1).insert(button2).add(button3)
 
 
@@ -87,6 +89,12 @@ async def check_zero(message: types.Message):
 async def get_id(message: types.Message):
     await message.answer(message.sticker.file_id)
 
+
+# @dp.message_handler(commands='location')
+# async def send_random_location(message: types.Message):
+#     await bot.send_location(chat_id=message.chat.id,
+#                             latitude=randrange(1, 90),
+#                             longitude=randrange(1, 90))
 
 
 
