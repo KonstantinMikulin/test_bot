@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from random import randrange
 import string
 import config
@@ -15,11 +16,20 @@ HELP_COMMAND = '''
 
 keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
                                one_time_keyboard=True)
-button1 = KeyboardButton('/help')
-button2 = KeyboardButton('/start')
-button3 = KeyboardButton('/description')
+button1 = KeyboardButton('/start')
+button2 = KeyboardButton('/links')
+keyboard.add(button1, button2)
 
-keyboard.add(button1).insert(button2).add(button3)
+inline_keyboard = InlineKeyboardMarkup(row_width=3)
+inline_button1 = InlineKeyboardButton(text='link 1',
+                                      url='https://ru.wikipedia.org/')
+inline_button2 = InlineKeyboardButton(text='link 2',
+                                      url='https://www.youtube.com/')
+inline_button3 = InlineKeyboardButton(text='link 3',
+                                      url='https://vk.com/')
+inline_button4 = InlineKeyboardButton(text='link 4',
+                                      url='https://github.com/')
+inline_keyboard.add(inline_button1, inline_button2, inline_button3, inline_button4)
 
 
 async def on_startup_msg(_):
@@ -28,7 +38,7 @@ async def on_startup_msg(_):
 
 @dp.message_handler(commands='start')
 async def start_command(message: types.Message):
-    await bot.send_message(message.from_user.id,
+    await bot.send_message(chat_id=message.chat.id,
                            text='Welcome',
                            reply_markup=keyboard)
     await message.delete()
@@ -88,6 +98,14 @@ async def check_zero(message: types.Message):
 @dp.message_handler(content_types=['sticker'])
 async def get_id(message: types.Message):
     await message.answer(message.sticker.file_id)
+
+
+@dp.message_handler(commands='links')
+async def links_command(message: types.Message):
+    await bot.send_message(chat_id=message.chat.id,
+                           text='Here you are',
+                           reply_markup=inline_keyboard)
+    await message.delete()
 
 
 # @dp.message_handler(commands='location')
