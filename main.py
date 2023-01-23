@@ -91,6 +91,23 @@ async def links_command(message: types.Message):
     await message.delete()
 
 
+@dp.message_handler(commands='vote')
+async def vote_command(message: types.Message):
+    await bot.send_sticker(chat_id=message.chat.id,
+                           sticker='CAACAgUAAxkBAAEHZsFjzsDqPa36ZPlODbcIr7pTyW6RdgACsQEAAqqYQFfPcvuENG4vGy0E')
+    await bot.send_message(chat_id=message.chat.id,
+                           text='Vote, please',
+                           reply_markup=config.inline_keyboard)
+
+
+@dp.callback_query_handler()
+async def vote_callback(callback: types.CallbackQuery):
+    if callback.data == 'like':
+        await callback.answer(text='You like it!')
+    else:
+        await callback.answer(text='You don`t like it')
+
+
 # @dp.message_handler(commands='location')
 # async def send_random_location(message: types.Message):
 #     await bot.send_location(chat_id=message.chat.id,
