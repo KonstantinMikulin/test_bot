@@ -4,18 +4,31 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 # bot`s token
 TOKEN ='5751024125:AAFHkyBrgab3LVI_OpmmpHoyhw-ts2Dqlo4'
 
-# reply keyboard
-keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
-                               one_time_keyboard=True)
+# reply keyboards
+keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True,
+                                one_time_keyboard=True)
 button1 = KeyboardButton(text='/help')
 button2 = KeyboardButton(text='/description')
-keyboard.add(button1, button2)
+button3 = KeyboardButton(text='/emoji')
+button4 = KeyboardButton(text='/sticker')
+button5 = KeyboardButton(text='/location')
+button6 = KeyboardButton(text='/photo')
+keyboard1.add(button1, button2, button3, button4, button5, button6)
+
+keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True,
+                                one_time_keyboard=True)
+button2_1 = KeyboardButton(text='/photo')
+button2_2 = KeyboardButton(text='/keyboard')
+keyboard2.add(button2_1, button2_2)
 
 # inline keyboard
 inline_keyboard = InlineKeyboardMarkup(row_width=2)
-inline_button1 = InlineKeyboardButton(text='👍🏻')
-inline_button2 = InlineKeyboardButton(text='👎🏻')
-inline_button3 = InlineKeyboardButton(text='Next')
+inline_button1 = InlineKeyboardButton(text='👍🏻',
+                                      callback_data='like')
+inline_button2 = InlineKeyboardButton(text='👎🏻',
+                                      callback_data='dislike')
+inline_button3 = InlineKeyboardButton(text='Next',
+                                      callback_data='next')
 inline_keyboard.add(inline_button1, inline_button2, inline_button3)
 
 
@@ -24,7 +37,23 @@ help_commands = '''
 <b>start</b> - run the bot!
 <b>help</b> - list of commands
 <b>description</b> - main idea
+<b>keyboard</b> - run keyboard
+<b>emoji</b> - send some emoji
+<b>sticker</b> - send some sticker
+<b>location</b> - send random location
+<b>photo</b> - send random photo
 '''
+
+
+# list of photo
+chuck = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTdEch9IuKWFMWoxycfGiGhRc9SOCOb7axEg&usqp=CAU'
+bruce = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaypMM-0kZeSBkzZJi_XNlsOICyfwI4UAR6Q&usqp=CAU'
+arnold = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpNGN2F7NQGrxO3uTs4r0yF8yuCUq4kBwqAw&usqp=CAU'
+sylvester = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMzmn84CZqMM3f1jK009KsRRf_W8q5vF0q-g&usqp=CAU'
+sean = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQynvRxKmTmU4hINNOFvwkpDIcVuM-7wMn8Ag&usqp=CAU'
+
+list_of_photos = [chuck, bruce, arnold, sylvester, sean]
+
 
 # keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
 #                                one_time_keyboard=True)

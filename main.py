@@ -23,7 +23,7 @@ async def on_startup_msg(_):
 async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id,
                            text='Welcome',
-                           reply_markup=config.keyboard)
+                           reply_markup=config.keyboard1)
     await message.delete()
 
 
