@@ -13,7 +13,7 @@ button3 = KeyboardButton(text='/emoji')
 button4 = KeyboardButton(text='/sticker')
 button5 = KeyboardButton(text='/location')
 button6 = KeyboardButton(text='/photo')
-keyboard1.add(button1, button2, button3, button4, button5, button6)
+keyboard1.add(button1, button2).add(button3, button4).add(button5, button6)
 
 keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True,
                                 one_time_keyboard=True)
@@ -34,6 +34,8 @@ inline_keyboard.add(inline_button1, inline_button2, inline_button3)
 
 # list of command for /help
 help_commands = '''
+<b>LIST OF COMMANDS</b>
+
 <b>start</b> - run the bot!
 <b>help</b> - list of commands
 <b>description</b> - main idea
@@ -44,15 +46,20 @@ help_commands = '''
 <b>photo</b> - send random photo
 '''
 
+# list and description of photos for random choice
+list_of_photos = ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTdEch9IuKWFMWoxycfGiGhRc9SOCOb7axEg&usqp=CAU',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaypMM-0kZeSBkzZJi_XNlsOICyfwI4UAR6Q&usqp=CAU',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpNGN2F7NQGrxO3uTs4r0yF8yuCUq4kBwqAw&usqp=CAU',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMzmn84CZqMM3f1jK009KsRRf_W8q5vF0q-g&usqp=CAU',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQynvRxKmTmU4hINNOFvwkpDIcVuM-7wMn8Ag&usqp=CAU']
 
-# list of photo
-chuck = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTdEch9IuKWFMWoxycfGiGhRc9SOCOb7axEg&usqp=CAU'
-bruce = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaypMM-0kZeSBkzZJi_XNlsOICyfwI4UAR6Q&usqp=CAU'
-arnold = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpNGN2F7NQGrxO3uTs4r0yF8yuCUq4kBwqAw&usqp=CAU'
-sylvester = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMzmn84CZqMM3f1jK009KsRRf_W8q5vF0q-g&usqp=CAU'
-sean = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQynvRxKmTmU4hINNOFvwkpDIcVuM-7wMn8Ag&usqp=CAU'
+descriptions_photos = ['Chuck',
+                       'Bruce',
+                       'Arnold',
+                       'Sylvester',
+                       'Sean']
 
-list_of_photos = [chuck, bruce, arnold, sylvester, sean]
+photos = dict(zip(list_of_photos, descriptions_photos))
 
 
 # keyboard = ReplyKeyboardMarkup(resize_keyboard=True,

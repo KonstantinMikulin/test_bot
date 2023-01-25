@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.dispatcher.filters import Text
 from random import randrange, choice
 
 import config
@@ -64,9 +65,10 @@ async def location_command(message: types.Message):
 
 @dp.message_handler(commands='photo')
 async def photo_command(message: types.Message):
+    random_photo = choice(list(config.photos.keys()))
     await bot.send_photo(chat_id=message.chat.id,
-                         caption='Like it or not?!',
-                         photo=choice(config.list_of_photos),
+                         photo=random_photo,
+                         caption=config.photos[random_photo],
                          reply_markup=config.inline_keyboard)
     await message.delete()
 
@@ -86,7 +88,7 @@ async def vote_callback(callback: types.CallbackQuery):
     elif callback.data == 'dislike':
         await callback.answer(text='You don`t like it!')
     else:
-        await callback.answer(text='Ok')
+        await callback.answer()
 
 
 if __name__ == '__main__':
