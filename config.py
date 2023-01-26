@@ -13,7 +13,8 @@ button3 = KeyboardButton(text='/emoji')
 button4 = KeyboardButton(text='/sticker')
 button5 = KeyboardButton(text='/location')
 button6 = KeyboardButton(text='/photo')
-keyboard1.add(button1, button2).add(button3, button4).add(button5, button6)
+button7 = KeyboardButton(text='/vote')
+keyboard1.add(button1, button2).add(button3, button4).add(button5, button6).add(button7)
 
 keyboard2 = ReplyKeyboardMarkup(resize_keyboard=True,
                                 one_time_keyboard=True)

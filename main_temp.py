@@ -7,6 +7,10 @@ import config
 bot = Bot(config.TOKEN)
 dp = Dispatcher(bot)
 
+random_photo = choice(list(config.photos.keys()))
+flag_like = False
+flag_dislike = False
+
 
 async def on_startup(_):
     print('Bot is running')
@@ -83,11 +87,27 @@ async def vote_command(message: types.Message):
 
 @dp.callback_query_handler()
 async def vote_callback(callback: types.CallbackQuery):
+    global random_photo
+    global flag_like
+    global flag_dislike
     if callback.data == 'like':
-        await callback.answer(text='You like it!')
+        if not flag_like:
+            await callback.answer(text='You like it!')
+            flag_like = not flag_like
+        else:
+            await callback.answer(text='You liked it already')
     elif callback.data == 'dislike':
-        await callback.answer(text='You don`t like it!')
+        if not flag_dislike:
+            await callback.answer(text='You don`t like it!')
+            flag_dislike = not flag_dislike
+        else:
+            await callback.answer(text='You don`t like it already!')
     else:
+        random_photo = choice(list(filter(lambda x: x != random_photo, list(config.photos.keys()))))
+        await callback.message.edit_media(types.InputMedia(media=random_photo,
+                                                           type='photo',
+                                                           caption=config.photos[random_photo]),
+                                          reply_markup=config.inline_keyboard)
         await callback.answer()
 
 
@@ -95,5 +115,3 @@ if __name__ == '__main__':
     executor.start_polling(dispatcher=dp,
                            on_startup=on_startup,
                            skip_updates=True)
-
-# TODO: инлайн клавиатура должна состоять из трёх кнопок: 1. Следующее фото. 2. Лайк 3. Дизлайк. Сделать обработку повторного нажатия на одну и ту же фотографию.
