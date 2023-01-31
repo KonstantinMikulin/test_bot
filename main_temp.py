@@ -11,8 +11,8 @@ async def send_bye():
 
 
 async def main():
-    task_1 = send_hello()
-    task_2 = send_bye()
+    task_1 = asyncio.create_task(send_hello())
+    task_2 = asyncio.create_task(send_bye())
 
     await task_1
     await task_2
