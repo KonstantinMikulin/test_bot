@@ -28,9 +28,9 @@ inline_button1 = InlineKeyboardButton(text='👍🏻',
                                       callback_data='like')
 inline_button2 = InlineKeyboardButton(text='👎🏻',
                                       callback_data='dislike')
-# inline_button3 = InlineKeyboardButton(text='Next',
-#                                       callback_data='next')
-inline_keyboard.add(inline_button1, inline_button2)
+inline_button3 = InlineKeyboardButton(text='Remove all',
+                                      callback_data='remove all')
+inline_keyboard.add(inline_button1, inline_button2, inline_button3)
 
 
 # list of command for /help
