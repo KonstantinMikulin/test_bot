@@ -24,13 +24,13 @@ keyboard2.add(button2_1, button2_2)
 
 # inline keyboard
 inline_keyboard = InlineKeyboardMarkup(row_width=2)
-inline_button1 = InlineKeyboardButton(text='👍🏻',
-                                      callback_data='like')
-inline_button2 = InlineKeyboardButton(text='👎🏻',
-                                      callback_data='dislike')
-inline_button3 = InlineKeyboardButton(text='Remove all',
-                                      callback_data='remove all')
-inline_keyboard.add(inline_button1, inline_button2, inline_button3)
+inline_button1 = InlineKeyboardButton(text='Increase',
+                                      callback_data='btn_increase')
+inline_button2 = InlineKeyboardButton(text='Decrease',
+                                      callback_data='btn_decrease')
+# inline_button3 = InlineKeyboardButton(text='Remove all',
+#                                       callback_data='remove all')
+inline_keyboard.add(inline_button1, inline_button2)
 
 
 # list of command for /help
