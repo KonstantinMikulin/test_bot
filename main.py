@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from random import randrange
+from aiogram.utils.exceptions import BotBlocked
 import string
 import config
 
@@ -116,6 +117,13 @@ async def vote_callback(callback: types.CallbackQuery):
         await callback.answer(text='You like it!')
     else:
         await callback.answer(text='You don`t like it')
+
+
+@dp.errors_handler(exception=BotBlocked)
+async def error_bot_blocked(update: types.Update, exception: BotBlocked):
+    print('Нельзя отправить сообщение, потому что бот заблокирован')
+
+    return True
 
 
 # @dp.callback_query_handler(cb.filter())

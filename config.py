@@ -1,5 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.callback_data import CallbackData
 
 # bot`s token
 TOKEN ='5751024125:AAFHkyBrgab3LVI_OpmmpHoyhw-ts2Dqlo4'
@@ -23,14 +24,20 @@ button2_2 = KeyboardButton(text='/keyboard')
 keyboard2.add(button2_1, button2_2)
 
 # inline keyboard
-inline_keyboard = InlineKeyboardMarkup(row_width=2)
-inline_button1 = InlineKeyboardButton(text='Increase',
-                                      callback_data='Hello')
-inline_button2 = InlineKeyboardButton(text='Decrease',
-                                      callback_data='btn_decrease')
-inline_button3 = InlineKeyboardButton(text='Random number',
-                                      callback_data='btn_random')
-inline_keyboard.add(inline_button1, inline_button2, inline_button3)
+cb = CallbackData('ikb', 'action')
+def get_ikb():
+    inline_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text='Button 1', callback_data=cb.new('push 1'))],
+        [InlineKeyboardButton(text='Button 2', callback_data=cb.new('push 2'))]
+    ])
+# inline_keyboard = InlineKeyboardMarkup(row_width=2)
+# inline_button1 = InlineKeyboardButton(text='Button 1',
+#                                       callback_data='hello')
+# inline_button2 = InlineKeyboardButton(text='Button 2',
+#                                       callback_data='world')
+# inline_button3 = InlineKeyboardButton(text='Random number',
+#                                       callback_data='btn_random')
+# inline_keyboard.add(inline_button1, inline_button2)
 
 
 # list of command for /help
