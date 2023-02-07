@@ -8,6 +8,12 @@ import config
 bot = Bot(config.TOKEN)
 dp = Dispatcher(bot)
 
+#cb = CallbackData('ikb', 'action')
+
+# ikb = InlineKeyboardMarkup(inline_keyboard=[
+#                            [InlineKeyboardButton('Button', callback_data=cb.new('push'))]
+#                            ])
+
 HELP_COMMAND = '''
 <b>/start</b> <em>- Run tha Bot!</em>
 <b>/help</b> <em>- show some help</em>
@@ -112,6 +118,12 @@ async def vote_callback(callback: types.CallbackQuery):
         await callback.answer(text='You don`t like it')
 
 
+# @dp.callback_query_handler(cb.filter())
+# async def ikb_cb_handler(callback: types.CallbackQuery, callback_data: dict):
+#     if callback_data['action'] == 'push':
+#         await callback.answer(text='Something')
+
+
 # @dp.message_handler(commands='location')
 # async def send_random_location(message: types.Message):
 #     await bot.send_location(chat_id=message.chat.id,
@@ -204,10 +216,14 @@ async def vote_callback(callback: types.CallbackQuery):
 #         number += 1
 #         await callback.message.edit_text(f'Current number is {number}',
 #                                          reply_markup=get_inline_keyboard())
-#     else:
+#     elif callback.data == 'btn_decrease':
 #         number -= 1
 #         await callback.message.edit_text(f'Current number is {number}',
 #                                          reply_markup=get_inline_keyboard())
+#     else:
+#         number = randint(0, 1000)
+#         await callback.message.edit_text(f'Current number is {number}',
+#                                          reply_markup=get_inline_keyboard()))
 
 
 if __name__ == '__main__':
