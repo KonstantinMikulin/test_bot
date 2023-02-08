@@ -1,10 +1,13 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 from random import randrange
 from aiogram.utils.exceptions import BotBlocked
 import string
-import config
+import hashlib
+
+from config import TOKEN
 
 bot = Bot(config.TOKEN)
 dp = Dispatcher(bot)
@@ -126,10 +129,46 @@ async def error_bot_blocked(update: types.Update, exception: BotBlocked):
     return True
 
 
+# def get_ikb():
+#     ikb = InlineKeyboardMarkup(inline_keyboard=[
+#         [InlineKeyboardButton(text='Button 1', callback_data=cb.new('push 1'))],
+#         [InlineKeyboardButton(text='Button 2', callback_data=cb.new('push 2'))]
+#     ])
+#
+#     return ikb
+
+
 # @dp.callback_query_handler(cb.filter())
 # async def ikb_cb_handler(callback: types.CallbackQuery, callback_data: dict):
 #     if callback_data['action'] == 'push':
 #         await callback.answer(text='Something')
+
+
+# @dp.callback_query_handler(cb.filter(action='push 1'))
+# async def push1_cb_hand(callback: types.CallbackQuery):
+#     await callback.answer(text='Hello!')
+#
+#
+# @dp.callback_query_handler(cb.filter(action='push 2'))
+# async def push2_cb_hand(callback: types.CallbackQuery):
+#     await callback.answer(text='World!')
+
+
+# @dp.inline_handler() # process InlineQuery() is formed by Telegram API
+# async def inline_echo(inline_query: types.InlineQuery):
+#     text = inline_query.query or 'Echo'  # получили текст от пользователя
+#     input_content = InputTextMessageContent(text)  # формируем контент ответного сообщения
+#     result_id = hashlib.md5(text.encode()).hexdigest()  # сделали уникальный ID результата
+#     item = InlineQueryResultArticle(
+#         input_message_content=input_content,
+#         id=result_id,
+#         title='Echo!!!'
+#     )
+#
+#     await bot.answer_inline_query(inline_query_id=inline_query.id,
+#                                   results=[item],
+#                                   cache_time=1)
+
 
 
 # @dp.message_handler(commands='location')

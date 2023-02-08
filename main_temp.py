@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent
 from aiogram.utils.callback_data import CallbackData
+import hashlib
 
 from config import TOKEN
 
@@ -16,6 +17,7 @@ def get_ikb():
     ])
 
     return ikb
+
 
 async def on_startup(_):
     print('Bot is running')
@@ -35,6 +37,23 @@ async def push1_cb_hand(callback: types.CallbackQuery):
 @dp.callback_query_handler(cb.filter(action='push 2'))
 async def push2_cb_hand(callback: types.CallbackQuery):
     await callback.answer(text='World!')
+
+
+@dp.inline_handler() # process InlineQuery() is formed by Telegram API
+async def inline_echo(inline_query: types.InlineQuery):
+    text = inline_query.query or 'Echo'  # получили текст от пользователя
+    input_content = InputTextMessageContent(text)  # формируем контент ответного сообщения
+    result_id = hashlib.md5(text.encode()).hexdigest()  # сделали уникальный ID результата
+    item = InlineQueryResultArticle(
+        input_message_content=input_content,
+        id=result_id,
+        title='Echo!!!'
+    )
+
+    await bot.answer_inline_query(inline_query_id=inline_query.id,
+                                  results=[item],
+                                  cache_time=1)
+
 
 
 if __name__ == '__main__':
