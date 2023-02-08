@@ -2,15 +2,20 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
+from aiogram.utils.callback_data import CallbackData
 from random import randrange
 from aiogram.utils.exceptions import BotBlocked
 import string
 import hashlib
 
+import config
 from config import TOKEN
 
-bot = Bot(config.TOKEN)
+bot = Bot(TOKEN)
 dp = Dispatcher(bot)
+
+
+# шаблон CallbackData
 
 #cb = CallbackData('ikb', 'action')
 
@@ -159,15 +164,18 @@ async def error_bot_blocked(update: types.Update, exception: BotBlocked):
 #     text = inline_query.query or 'Echo'  # получили текст от пользователя
 #     input_content = InputTextMessageContent(text)  # формируем контент ответного сообщения
 #     result_id = hashlib.md5(text.encode()).hexdigest()  # сделали уникальный ID результата
+#
+#     if text == 'photo':
+#         input_content = InputTextMessageContent('This is photo')
+#
 #     item = InlineQueryResultArticle(
 #         input_message_content=input_content,
 #         id=result_id,
-#         title='Echo!!!'
+#         title=text
 #     )
 #
 #     await bot.answer_inline_query(inline_query_id=inline_query.id,
-#                                   results=[item],
-#                                   cache_time=1)
+#                                   results=[item])
 
 
 

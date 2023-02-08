@@ -1,59 +1,48 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent
-from aiogram.utils.callback_data import CallbackData
+from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 import hashlib
 
 from config import TOKEN
 
-cb = CallbackData('ikb', 'action')
 bot = Bot(TOKEN)
 dp = Dispatcher(bot)
 
-
-def get_ikb():
-    ikb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text='Button 1', callback_data=cb.new('push 1'))],
-        [InlineKeyboardButton(text='Button 2', callback_data=cb.new('push 2'))]
-    ])
-
-    return ikb
+user_data = ''
 
 
 async def on_startup(_):
     print('Bot is running')
 
 
-@dp.message_handler(commands='start')
+@dp.message_handler(commands=['start'])
 async def cmd_start(message: types.Message):
-    await message.answer(text='Welcome to The Bot',
-                         reply_markup=get_ikb())
+    await message.answer(text='Input your number')
 
 
-@dp.callback_query_handler(cb.filter(action='push 1'))
-async def push1_cb_hand(callback: types.CallbackQuery):
-    await callback.answer(text='Hello!')
+@dp.message_handler()
+async def text_handler(message: types.Message):
+    global user_data
+    user_data = message.text
+
+    if message.text.isdigit():
+        await message.reply(text='Your data was saved')
 
 
-@dp.callback_query_handler(cb.filter(action='push 2'))
-async def push2_cb_hand(callback: types.CallbackQuery):
-    await callback.answer(text='World!')
-
-
-@dp.inline_handler() # process InlineQuery() is formed by Telegram API
+@dp.inline_handler()
 async def inline_echo(inline_query: types.InlineQuery):
-    text = inline_query.query or 'Echo'  # получили текст от пользователя
-    input_content = InputTextMessageContent(text)  # формируем контент ответного сообщения
-    result_id = hashlib.md5(text.encode()).hexdigest()  # сделали уникальный ID результата
-    item = InlineQueryResultArticle(
-        input_message_content=input_content,
-        id=result_id,
-        title='Echo!!!'
-    )
+    text = inline_query.query or 'Echo'
+    result_id: str = hashlib.md5(text.encode()).hexdigest()
+    input_content = InputTextMessageContent(f'<b>{text}</b> - {user_data}',
+                                            parse_mode='html')
 
-    await bot.answer_inline_query(inline_query_id=inline_query.id,
-                                  results=[item],
+    item = InlineQueryResultArticle(input_message_content=input_content,
+                                    id=result_id,
+                                    title='Echo Bot!',
+                                    description='Hello I`m The Bot!')
+
+    await bot.answer_inline_query(results=[item],
+                                  inline_query_id=inline_query.id,
                                   cache_time=1)
-
 
 
 if __name__ == '__main__':
