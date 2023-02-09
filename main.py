@@ -281,5 +281,33 @@ async def error_bot_blocked(update: types.Update, exception: BotBlocked):
 #                                          reply_markup=get_inline_keyboard()))
 
 
+# два всплюывающих окна для работы в инлайн режиме
+# @dp.inline_handler()
+# async def inline_article(inline_query: types.InlineQuery):
+#     text = inline_query.query or 'Empty'
+#     input_content_bold = InputTextMessageContent(message_text=f'*{text}*',
+#                                                  parse_mode='markdown')
+#     input_content_italic = InputTextMessageContent(message_text=f'_{text}_',
+#                                                    parse_mode='markdown')
+#
+#     item_1 = InlineQueryResultArticle(id=str(uuid.uuid4()),
+#                                       input_message_content=input_content_bold,
+#                                       title='Bold',
+#                                       description=text,
+#                                       thumb_url='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu8S4D8vnu9XgYneqlE0MF-y1bM53aCuwTxQ&usqp=CAU'
+#                                       )
+#
+#     item_2 = InlineQueryResultArticle(id=str(uuid.uuid4()),
+#                                       input_message_content=input_content_italic,
+#                                       title='Italic',
+#                                       description=text,
+#                                       thumb_url='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVkcF3NDbExq1RrPssgteKcAY1R8xY_KZPvg&usqp=CAU'
+#                                       )
+#
+#     await bot.answer_inline_query(inline_query_id=inline_query.id,
+#                                   results=[item_1, item_2],
+#                                   cache_time=1)
+
+
 if __name__ == '__main__':
     executor.start_polling(dp, on_startup=on_startup_msg, skip_updates=True)
