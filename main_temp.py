@@ -19,30 +19,59 @@ class ProfileStatesGroup(StatesGroup):
     description = State()
 
 
-
 async def on_startup(_):
     print('Bot is running')
 
 
-def get_kb():
-    kb = ReplyKeyboardMarkup(resize_keyboard=True)
-    kb.add(KeyboardButton('/create'))
+# Keyboard for starting profiling
+def get_create_kb():
+    kb_1 = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb_1.add(KeyboardButton('/create'))
 
-    return kb
+    return kb_1
+
+
+# Keyboard for canceling profiling
+def get_cancel_kb():
+    kb_2 = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb_2.add(KeyboardButton('/cancel'))
+
+    return kb_2
 
 
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     await message.answer(text='Hello! Send "/create"',
-                         reply_markup=get_kb())
+                         reply_markup=get_create_kb())
 
 
+# Command for cancelling  profiling process.
+@dp.message_handler(commands='cancel', state='*')  # Need to mention that bot can be in any state
+async def cmd_cancel(message: types.Message, state: FSMContext):
+    if state is None:
+        return
+
+    await state.finish()
+    await message.answer(text='Profiling was stopped',
+                         reply_markup=get_create_kb())
+
+
+# Старт сбора данных. Запрос на отправку фото.
 @dp.message_handler(commands='create')
 async def cmd_create(message: types.Message):
-    await message.reply('Let`s start! Send me your photo')
-    await ProfileStatesGroup.photo.set() # установили для бота состояние "фото"
+    await message.reply(text='Let`s start! Send me your photo',
+                        reply_markup=get_cancel_kb())
+    await ProfileStatesGroup.photo.set()  # установили для бота состояние "фото"
 
 
+# Проверка того, что пользователь прислал фото.
+@dp.message_handler(lambda message: not message.photo,
+                    state=ProfileStatesGroup.photo)  # We need 'state' argument. Only if bot in this state, this handler will work.
+async def check_photo(message: types.Message):
+    await message.reply('This is not photo')
+
+
+# State set as 'photo'. Request fot name from user.
 @dp.message_handler(content_types=['photo'], state=ProfileStatesGroup.photo)
 async def load_photo(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -59,6 +88,13 @@ async def load_name(message: types.Message, state: FSMContext):
 
     await message.reply('How old are you?')
     await ProfileStatesGroup.next()
+
+
+# Check for correct age
+@dp.message_handler(lambda message: not message.text.isdigit() or int(message.text) > 100,
+                    state=ProfileStatesGroup.age)
+async def check_photo(message: types.Message):
+    await message.reply('Input correct age')
 
 
 @dp.message_handler(state=ProfileStatesGroup.age)
@@ -80,6 +116,7 @@ async def load_description(message: types.Message, state: FSMContext):
 
     await message.reply('All data was loaded')
     await state.finish()
+
 
 if __name__ == '__main__':
     executor.start_polling(dispatcher=dp,
