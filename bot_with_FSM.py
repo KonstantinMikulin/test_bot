@@ -1,88 +1,124 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
-from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import FSMContext
 
 from config import TOKEN
+from sqlite import db_start, create_profile, edit_profile
 
 storage = MemoryStorage()
-bot = Bot(TOKEN)
+bot = Bot(token=TOKEN)
 dp = Dispatcher(bot,
                 storage=storage)
 
 
-def get_keyboard():
-    kb = ReplyKeyboardMarkup(resize_keyboard=True)
-    kb.add(KeyboardButton('Start work'))
-
-    return kb
-
-
-def get_cancel_kb():
-    return ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton('/cancel'))
-
-
-class ClientStatesGroup(StatesGroup):
+class ProfileStatesGroup(StatesGroup):
     photo = State()
+    name = State()
+    age = State()
     description = State()
 
 
 async def on_startup(_):
-    print('Bot is running')
+    await db_start()
+
+
+# Keyboard for starting profiling
+def get_create_kb():
+    kb_1 = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb_1.add(KeyboardButton('/create'))
+
+    return kb_1
+
+
+# Keyboard for canceling profiling
+def get_cancel_kb():
+    kb_2 = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb_2.add(KeyboardButton('/cancel'))
+
+    return kb_2
 
 
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
-    await message.answer(text='Hello!',
-                         reply_markup=get_keyboard())
+    await message.answer(text='Hello! Send "/create"',
+                         reply_markup=get_create_kb())
+
+    await create_profile(user_id=message.from_user.id)
 
 
-@dp.message_handler(commands='cancel', state='*')
-async def cmd_start(message: types.Message, state: FSMContext):
-    current_state = await state.get_state()
-    if current_state is None:
+# Command for cancelling  profiling process.
+@dp.message_handler(commands='cancel', state='*')  # Need to mention that bot can be in any state
+async def cmd_cancel(message: types.Message, state: FSMContext):
+    if state is None:
         return
 
-    await message.reply(text='Cancelled',
-                        reply_markup=get_keyboard())
     await state.finish()
+    await message.answer(text='Profiling was stopped',
+                         reply_markup=get_create_kb())
 
 
-@dp.message_handler(Text(equals='Start work', ignore_case=True), state=None)
-async def start_work(message: types.Message):
-    await ClientStatesGroup.photo.set()
-    await message.answer(text='Send photo first please',
-                         reply_markup=get_cancel_kb())
+# Старт сбора данных. Запрос на отправку фото.
+@dp.message_handler(commands='create')
+async def cmd_create(message: types.Message):
+    await message.reply(text='Let`s start! Send me your photo',
+                        reply_markup=get_cancel_kb())
+    await ProfileStatesGroup.photo.set()  # установили для бота состояние "фото"
 
 
-@dp.message_handler(lambda message: not message.photo, state=ClientStatesGroup.photo)
+# Проверка того, что пользователь прислал фото.
+@dp.message_handler(lambda message: not message.photo,
+                    state=ProfileStatesGroup.photo)  # We need 'state' argument. Only if bot in this state, this handler will work.
 async def check_photo(message: types.Message):
-    return await message.reply(text='This is NOT photo')
+    await message.reply('This is not photo')
 
 
-@dp.message_handler(lambda message: message.photo, content_types=['photo'], state=ClientStatesGroup.photo)
+# State set as 'photo'. Request fot name from user.
+@dp.message_handler(content_types=['photo'], state=ProfileStatesGroup.photo)
 async def load_photo(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['photo'] = message.photo[0].file_id
 
-    await ClientStatesGroup.next()
-    await message.reply(text='Now send description please')
+    await message.reply('Now send your name')
+    await ProfileStatesGroup.next()
 
 
-@dp.message_handler(state=ClientStatesGroup.description)
-async def load_desc(message: types.Message, state: FSMContext):
+@dp.message_handler(state=ProfileStatesGroup.name)
+async def load_name(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['name'] = message.text
+
+    await message.reply('How old are you?')
+    await ProfileStatesGroup.next()
+
+
+# Check for correct age
+@dp.message_handler(lambda message: not message.text.isdigit() or int(message.text) > 100,
+                    state=ProfileStatesGroup.age)
+async def check_photo(message: types.Message):
+    await message.reply('Input correct age')
+
+
+@dp.message_handler(state=ProfileStatesGroup.age)
+async def load_age(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['age'] = message.text
+
+    await message.reply('Write description')
+    await ProfileStatesGroup.next()
+
+
+@dp.message_handler(state=ProfileStatesGroup.description)
+async def load_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['description'] = message.text
-
-    await message.reply(text='Your photo was saved')
-
-    async with state.proxy() as data:
-        await bot.send_photo(chat_id=message.from_user.id,
+        await bot.send_photo(chat_id=message.chat.id,
                              photo=data['photo'],
-                             caption=data['description'])
+                             caption=f"{data['name']}, {data['age']}\n{data['description']}")
 
+    await edit_profile(state, user_id=message.from_user.id)
+    await message.reply('All data was loaded')
     await state.finish()
 
 
