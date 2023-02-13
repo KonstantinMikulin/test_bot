@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.middlewares import BaseMiddleware
+from aiogram.dispatcher.handler import CancelHandler, current_handler
 
 from config import TOKEN
 
@@ -7,28 +8,36 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
 
-class CustomMiddleware(BaseMiddleware):
+def set_key(key: str = None):
+    def decorator(func):
+        setattr(func, 'key', key)
 
-    async def on_pre_process_update(self, update: types.Update, data: dict):
-        pass
+        return func
 
-    async def on_process_update(self, update: types.Update, data: dict):
-        pass
+    return decorator
 
+
+class AdminMiddleware(BaseMiddleware):
     async def on_process_message(self, message: types.Message, data: dict):
-        print(data, message)
+        handler = current_handler.get()
+
+        if handler:
+            key = getattr(handler, 'key', 'Такого атрибута нет')
+            print(key)
 
 
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
-    ikb = types.InlineKeyboardMarkup(inline_keyboard=[
-        [types.InlineKeyboardButton('Test', callback_data='data')]
-    ])
-    await message.answer(text='Started',
-                         reply_markup=ikb)
+    await message.reply(text='Started')
+
+
+@dp.message_handler(lambda message: message.text.lower() == 'hello')
+@set_key('hello')
+async def text_hello(message: types.Message):
+    await message.reply('Hello you!')
 
 
 if __name__ == '__main__':
-    dp.middleware.setup(CustomMiddleware())
+    dp.middleware.set(AdminMiddleware)
     executor.start_polling(dispatcher=dp,
                            skip_updates=True)
