@@ -5,6 +5,7 @@ from aiogram import Dispatcher, Bot
 
 from bot.config_reader import get_config, BotConfig
 from bot.handlers import get_routers
+from bot.handlers.main_menu import set_main_menu
 
 
 async def main():
@@ -22,11 +23,14 @@ async def main():
     
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id)
-    # creatin bot object
+    # creating bot object
     bot = Bot(token=bot_config.token.get_secret_value())
     
     # connecting handlers`routers
     dp.include_routers(*get_routers())
+    
+    # set main menu
+    await set_main_menu(bot)
     
     # skip updates and run pulling
     await bot.delete_webhook(drop_pending_updates=True)
