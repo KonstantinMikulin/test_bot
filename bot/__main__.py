@@ -8,7 +8,6 @@ from bot.handlers import get_routers
 
 
 async def main():
-    #TODO: check if logging works
     logging.basicConfig(
         level=logging.DEBUG,
         format="[%(asctime)s] #%(levelname)-8s %(filename)s:"
