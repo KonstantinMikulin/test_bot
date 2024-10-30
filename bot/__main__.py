@@ -4,9 +4,10 @@ import logging
 from aiogram import Dispatcher, Bot
 
 from bot.config_reader import get_config, BotConfig
+from bot.handlers import get_routers
 
 
-def main():
+async def main():
     #TODO: check if logging works
     logging.basicConfig(
         level=logging.DEBUG,
@@ -26,4 +27,9 @@ def main():
     bot = Bot(token=bot_config.token.get_secret_value())
     
     # connecting handlers`routers
-    dp.include_routers(*pass)
+    dp.include_routers(*get_routers())
+    
+    await dp.start_polling(bot)
+    
+    
+asyncio.run(main())
