@@ -7,6 +7,6 @@ router = Router(name="admin router")
 
 
 # command /test 'only' for admin
-@router.message(Command(commands='test'))
+@router.message(Command(commands='stats'))
 async def cmd_test(message: Message):
-    await message.answer('Hello, admin!')
+    await message.answer('Here is statistics, admin!')

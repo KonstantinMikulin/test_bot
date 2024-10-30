@@ -13,6 +13,6 @@ async def cmd_start(message: Message):
 
 
 # command /check 'only' for user
-@router.message(Command(commands='check'))
+@router.message(Command(commands='weight'))
 async def cmd_check(message: Message):
-    await message.answer('Hello, user!')
+    await message.answer('Your record was add to database, user!')
