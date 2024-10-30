@@ -2,7 +2,7 @@ from functools import lru_cache
 from os import getenv
 from typing import TypeVar, Type
 
-from pydantic import BaseModel, SecretStr, PostgresDsn
+from pydantic import BaseModel, SecretStr
 from yaml import load  # type:ignore
 
 try:
@@ -16,11 +16,6 @@ ConfigType = TypeVar("ConfigType", bound=BaseModel)
 class BotConfig(BaseModel):
     token: SecretStr
     admin_id: int
-
-
-class DbConfig(BaseModel):
-    dsn: PostgresDsn
-    is_echo: bool
 
 
 @lru_cache(maxsize=1)
