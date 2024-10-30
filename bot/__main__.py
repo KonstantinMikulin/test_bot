@@ -28,6 +28,8 @@ async def main():
     # connecting handlers`routers
     dp.include_routers(*get_routers())
     
+    # skip updates and run pulling
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
     
     
