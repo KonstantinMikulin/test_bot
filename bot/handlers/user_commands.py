@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from bot.keyboards import url_keyboard, records_keyboard, create_records_keyboard
+from bot.keyboards import url_keyboard, create_records_keyboard
 
 # creating router`s onject
 router = Router(name='user router')
