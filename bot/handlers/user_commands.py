@@ -14,10 +14,16 @@ async def cmd_start(message: Message):
     await message.answer('Hello user or admin!')
 
 
-# command /check 'only' for user
+# command /weight 'only' for user
 @router.message(Command(commands='weight'))
-async def cmd_check(message: Message):
-    await message.answer('Your record was add to database, user!')
+async def cmd_weight(message: Message):
+    await message.answer('Your weight record was add to database, user!')
+    
+    
+# command /measure 'only' for user
+@router.message(Command(commands="measure"))
+async def cmd_measure(message: Message):
+    await message.answer("Your measure record was add to database, user!")
 
 
 # command for /diet for everyone
