@@ -1,8 +1,12 @@
+import logging
+
 from aiogram import Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
 from bot.keyboards import url_keyboard, create_records_keyboard
+
+logger = logging.getLogger(__name__)
 
 # creating router`s onject
 router = Router(name='user router')
@@ -11,7 +15,11 @@ router = Router(name='user router')
 # command /start for everyone
 @router.message(CommandStart())
 async def cmd_start(message: Message):
+    logger.debug('Entrering handler for /start')
+    
     await message.answer('Hello user or admin!')
+    
+    logger.debug("Exiting handler for /start")
 
 
 # command /weight 'only' for user
