@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from bot.keyboards import url_keyboard
+from bot.keyboards import url_keyboard, records_keyboard
 
 # creating router`s onject
 router = Router(name='user router')
@@ -24,6 +24,15 @@ async def cmd_check(message: Message):
 @router.message(Command(commands='diet'))
 async def cmd_diet(message: Message):
     await message.answer(
-        text='Heare your food and goal',
+        text='Here are your food and goal',
         reply_markup=url_keyboard
+    )
+
+
+# commands for /record for everyone
+@router.message(Command(commands='record'))
+async def cmd_record(message: Message):
+    await message.answer(
+        text='What do you want to write down?',
+        reply_markup=records_keyboard
     )
