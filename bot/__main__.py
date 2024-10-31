@@ -4,7 +4,7 @@ import logging
 from aiogram import Dispatcher, Bot
 
 from bot.config_reader import get_config, BotConfig
-from bot.handlers import get_routers
+from bot.handlers import get_commands_routers
 from bot.handlers.main_menu import set_main_menu
 
 
@@ -27,7 +27,7 @@ async def main():
     bot = Bot(token=bot_config.token.get_secret_value())
     
     # connecting handlers`routers
-    dp.include_routers(*get_routers())
+    dp.include_routers(*get_commands_routers())
     
     # set main menu
     await set_main_menu(bot)
