@@ -27,6 +27,9 @@ async def main():
     # creating bot object
     bot = Bot(token=bot_config.token.get_secret_value())
     
+    # passing bot object to workflow data
+    dp.workflow_data.update({'bot': bot})
+    
     # connecting handlers`routers
     dp.include_routers(*get_commands_routers())
     
