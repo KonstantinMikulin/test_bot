@@ -1,3 +1,4 @@
 .venv
 config.yml
 __pycache__/
+test.py
