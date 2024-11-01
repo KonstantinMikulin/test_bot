@@ -20,6 +20,7 @@ class SomeInnerMiddleware(BaseMiddleware):
             __class__.__name__, # type:ignore
             event.__class__.__name__
         )
+        data['some_new'] = 'New info'
         
         result = await handler(event, data)
         

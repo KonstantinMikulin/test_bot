@@ -28,7 +28,7 @@ async def main():
     bot = Bot(token=bot_config.token.get_secret_value())
     
     # passing bot object to workflow data
-    dp.workflow_data.update({'bot': bot})
+    dp.workflow_data.update({'bot': bot, 'my_dp': dp})
     
     # connecting handlers`routers
     dp.include_routers(*get_commands_routers())
@@ -36,6 +36,7 @@ async def main():
     # registering middlewares
     dp.update.outer_middleware(IsUserOuterMiddleware())
     admin_router.message.middleware(SomeInnerMiddleware())
+    
     # set main menu
     await set_main_menu(bot)
     
