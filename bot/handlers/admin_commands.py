@@ -1,9 +1,16 @@
 from aiogram import Router
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
+
+from bot.filters.main_filters import IsAdminFilter
 
 # creating router`s onject
 router = Router(name="admin router")
+
+
+@router.message(CommandStart(), IsAdminFilter())
+async def cmd_admin_start(message: Message):
+    await message.answer('Admin, you sent /start! Welcome!')
 
 
 # command /test 'only' for admin

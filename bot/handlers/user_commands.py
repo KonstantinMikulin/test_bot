@@ -14,12 +14,12 @@ router = Router(name='user router')
 
 # command /start for everyone
 @router.message(CommandStart())
-async def cmd_start(message: Message):
-    logger.debug('Entrering handler for /start')
+async def cmd_user_start(message: Message):
+    logger.debug('Enter handler for /start')
     
-    await message.answer('Hello user or admin!')
+    await message.answer('You sent /start, user')
     
-    logger.debug("Exiting handler for /start")
+    logger.debug("Exit handler for /start")
 
 
 # command /weight 'only' for user

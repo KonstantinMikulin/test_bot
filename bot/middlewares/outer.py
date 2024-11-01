@@ -30,7 +30,7 @@ class IsUserOuterMiddleware(BaseMiddleware):
         # we can do something while entering middleware
         print(f"This user {user.id} try to use this bot")
 
-        if user.id != 828900493:
+        if user.id not in (828900493, 5903864970):
             # send message to not allowed user
             await bot.send_message(
                 chat_id=chat.id,
@@ -44,6 +44,9 @@ class IsUserOuterMiddleware(BaseMiddleware):
             print(f"User {user.id} is not allowed to use this bot")
             return None
 
+        # we can do something while exiting middleware
+        print(f"This user {user.id} is allowed to use this bot")
+        
         result = await handler(event, data)
 
         logger.debug(
@@ -51,9 +54,6 @@ class IsUserOuterMiddleware(BaseMiddleware):
             __class__.__name__,  # type:ignore
             event.__class__.__name__,
         )
-
-        # we can do something while exiting middleware
-        print(f"This user {user.id} is allowed to use this bot")
 
         return result
 
