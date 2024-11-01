@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
-from bot.filters.main_filters import IsAdminFilter
+from bot.filters import IsAdminFilter
 
 # creating router`s onject
 router = Router(name="admin router")
