@@ -5,15 +5,15 @@ from aiogram.types import Message
 from bot.filters import IsAdminFilter
 
 # creating router`s onject
-router = Router(name="admin router")
+admin_router = Router(name="admin router")
 
 
-@router.message(CommandStart(), IsAdminFilter())
+@admin_router.message(CommandStart(), IsAdminFilter())
 async def cmd_admin_start(message: Message):
     await message.answer('Admin, you sent /start! Welcome!')
 
 
 # command /test 'only' for admin
-@router.message(Command(commands='stats'))
+@admin_router.message(Command(commands='stats'))
 async def cmd_test(message: Message):
     await message.answer('Here is statistics, admin!')

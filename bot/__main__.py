@@ -4,10 +4,10 @@ import logging
 from aiogram import Dispatcher, Bot
 
 from bot.config_reader import get_config, BotConfig
-from bot.handlers import get_commands_routers
+from bot.handlers import get_commands_routers, admin_router
 from bot.handlers.main_menu import set_main_menu
 
-from bot.middlewares import IsUserOuterMiddleware
+from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware
 
 async def main():
     logging.basicConfig(
@@ -33,9 +33,9 @@ async def main():
     # connecting handlers`routers
     dp.include_routers(*get_commands_routers())
     
-    # registering middleware
+    # registering middlewares
     dp.update.outer_middleware(IsUserOuterMiddleware())
-    
+    admin_router.message.middleware(SomeInnerMiddleware())
     # set main menu
     await set_main_menu(bot)
     
