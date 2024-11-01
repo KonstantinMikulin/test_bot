@@ -15,11 +15,11 @@ user_router = Router(name='user router')
 # command /start for everyone
 @user_router.message(CommandStart())
 async def cmd_user_start(message: Message):
-    logger.debug('Enter handler for /start')
+    logger.info("Enter user`s /start handler")
     
     await message.answer('You sent /start, user')
     
-    logger.debug("Exit handler for /start")
+    logger.debug("Exit user`s /start handler")
 
 
 # command /weight 'only' for user

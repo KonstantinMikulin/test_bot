@@ -12,7 +12,7 @@ class IsAdminFilter(BaseFilter):
         self,
         event: TelegramObject
     ) -> bool:
-        logger.debug('Entering filter %s', __class__.__name__) # type:ignore
+        logger.debug('Enter filter %s', __class__.__name__) # type:ignore
         
         user: User = event.from_user # type:ignore
 
@@ -23,3 +23,5 @@ class IsAdminFilter(BaseFilter):
             return True
         
         return False
+    
+        logger.debug("Exit filter %s", __class__.__name__)  # type:ignore
