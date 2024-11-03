@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from aiogram import Router
@@ -22,6 +23,10 @@ async def cmd_admin_start(message: Message, some_new):
     logger.info("Exit admin`s /start handler")
     
 # command /test 'only' for admin
-@admin_router.message(Command(commands='stats'))
+@admin_router.message(
+    Command(commands="stats"),
+    flags={"long_operation": "typing"}
+)
 async def cmd_test(message: Message):
+    await asyncio.sleep(3)
     await message.answer('Here is statistics, admin!')

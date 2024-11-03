@@ -7,7 +7,7 @@ from bot.config_reader import get_config, BotConfig
 from bot.handlers import get_commands_routers, admin_router
 from bot.handlers.main_menu import set_main_menu
 
-from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware
+from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware, ChatActionInnerMiddleware
 
 async def main():
     logging.basicConfig(
@@ -36,6 +36,7 @@ async def main():
     # registering middlewares
     dp.update.outer_middleware(IsUserOuterMiddleware())
     admin_router.message.middleware(SomeInnerMiddleware())
+    admin_router.message.middleware(ChatActionInnerMiddleware())
     
     # set main menu
     await set_main_menu(bot)

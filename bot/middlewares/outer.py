@@ -16,7 +16,7 @@ class IsUserOuterMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         logger.debug(
-            "Entering middleware %s, event`s type %s",
+            "Enter middleware %s, event`s type %s",
             __class__.__name__,  # type:ignore
             event.__class__.__name__,
         )
@@ -50,7 +50,7 @@ class IsUserOuterMiddleware(BaseMiddleware):
         result = await handler(event, data)
 
         logger.debug(
-            "Exiting middleware %s, event`s type %s",
+            "Exit middleware %s, event`s type %s",
             __class__.__name__,  # type:ignore
             event.__class__.__name__,
         )
