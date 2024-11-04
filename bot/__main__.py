@@ -2,6 +2,8 @@ import asyncio
 import logging
 
 from aiogram import Dispatcher, Bot
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 
 from bot.config_reader import get_config, BotConfig
 from bot.handlers import get_commands_routers, admin_router
@@ -25,7 +27,10 @@ async def main():
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id)
     # creating bot object
-    bot = Bot(token=bot_config.token.get_secret_value())
+    bot = Bot(
+        token=bot_config.token.get_secret_value(),
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+        )
     
     # passing bot object to workflow data
     dp.workflow_data.update({'bot': bot, 'my_dp': dp})

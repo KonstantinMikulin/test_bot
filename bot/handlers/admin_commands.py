@@ -18,7 +18,7 @@ async def cmd_admin_start(message: Message, some_new):
     logger.info("Enter admin`s /start handler")
     logger.info(f"This is info from inner middleware: '{some_new}'")
     
-    await message.answer('Admin, you sent /start! Welcome!')
+    await message.answer('<b>Admin</b>, you sent /start! Welcome!')
     
     logger.info("Exit admin`s /start handler")
     
