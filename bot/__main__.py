@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from bot.config_reader import get_config, BotConfig, DbConfig
 from bot.handlers import get_commands_routers, admin_router
 from bot.handlers.main_menu import set_main_menu
-
 from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware, ChatActionInnerMiddleware
+from bot.db.tables import metadata
 
 async def main():
     logging.basicConfig(
@@ -40,6 +40,10 @@ async def main():
     async with engine.begin() as conn:
         # simple text quenue
         await conn.execute(text("SELECT 1"))
+    
+    # create table
+    async with engine.begin() as conn:
+        await conn.run_sync(metadata.create_all)
     
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id)
