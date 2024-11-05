@@ -39,30 +39,36 @@ async def cmd_admin_start(message: Message, db_engine: AsyncEngine):
     logger.info("Exit admin`s /start handler")
 
 
-@admin_router.message(Command(commands="select"))
+@admin_router.message(Command("select"))
 async def cmd_select(message: Message, db_engine: AsyncEngine):
     stmts = [
-        select(column("telegram_id"), column("first_name")).select_from(users_table),
+        select(column("telegram_id"), column("first_name")).select_from(
+            users_table
+        ),
         select("*").select_from(users_table),
-        select("*").select_from(users_table).where(users_table.c.first_name == "Konstantin"),
-        select(users_table.c.telegram_id, users_table.c.first_name).select_from(users_table),
-        select(users_table.c.telegram_id).where(users_table.c.telegram_id < 1_000_000)
+        select("*")
+        .select_from(users_table)
+        .where(users_table.c.first_name == "Groosha"),
+        select(users_table.c.telegram_id, users_table.c.first_name).select_from(
+            users_table
+        ),
+        select(users_table.c.telegram_id).where(
+            users_table.c.telegram_id < 1_000_000
+        ),
     ]
-    
+
     async with db_engine.connect() as conn:
         for stmt in stmts:
             result = await conn.execute(stmt)
-            
             for row in result:
                 print(row)
-                
-        print("=====================")
-    await message.answer("Check your terminal, please")
+        print("==========")
+    await message.answer("Проверьте терминал, чтобы увидеть данные.")
 
 
 @admin_router.message(Command(commands="deletme"))
 async def cmd_delteme(message: Message, db_engine: AsyncEngine):
-    stmt = (delete(users_table).where(users_table.c.telegram_id == message.from_user.id))
+    stmt = (delete(users_table).where(users_table.c.telegram_id == message.from_user.id)) # type:ignore
     
     async with db_engine.connect() as conn:
         await conn.execute(stmt)

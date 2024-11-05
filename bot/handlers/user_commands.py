@@ -1,7 +1,7 @@
 import logging
 
 from aiogram import Router
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import Command
 from aiogram.types import Message
 
 from bot.keyboards import url_keyboard, create_records_keyboard
