@@ -1,0 +1,31 @@
+name: sqlalchemy-orm-test
+
+services:
+    postgres:
+        image: postgres:17.0-alpine
+        restart: no
+        ports:
+            - "127.0.0.1:5432:5432"
+        environment:
+            POSTGRES_USER: superuser
+            POSTGRES_PASSWORD: superpassword
+            POSTGRES_DB: data_for_bot
+        volumes:
+        - sqlalchemy-orm-test-postgres:/var/lib/postgresql/data_for_bot
+
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        restart: no
+        ports:
+            - "127.0.0.1:8080:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: a@a.com
+            PGADMIN_DEFAULT_PASSWORD: pgadmin
+        volumes:
+        - sqlalchemy-orm-test-pgadmin:/var/lib/pgadmin
+        depends_on:
+        - postgres
+
+volumes:
+    sqlalchemy-orm-test-pgadmin:
+    sqlalchemy-orm-test-postgres:
