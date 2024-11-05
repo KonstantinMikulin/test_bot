@@ -46,7 +46,7 @@ async def main():
         await conn.run_sync(metadata.create_all)
     
     # creating dispatcher object
-    dp = Dispatcher(admin_id=bot_config.admin_id)
+    dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine)
     # creating bot object
     bot = Bot(
         token=bot_config.token.get_secret_value(),
