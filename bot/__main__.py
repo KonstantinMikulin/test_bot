@@ -5,7 +5,10 @@ from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from bot.config_reader import get_config, BotConfig
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
+
+from bot.config_reader import get_config, BotConfig, DbConfig
 from bot.handlers import get_commands_routers, admin_router
 from bot.handlers.main_menu import set_main_menu
 
@@ -21,8 +24,22 @@ async def main():
     logger = logging.getLogger(__name__)
     logger.info('Bot starts')
     
-    # creating config 'object'
+    # creating bot`s config 'object'
     bot_config = get_config(BotConfig, 'bot')
+    
+    # create database config 'object'
+    db_config = get_config(DbConfig, "db")
+    
+    # create sqlachemy engine
+    engine = create_async_engine(
+        url=str(db_config.dsn),
+        echo=db_config.is_echo
+    )
+    
+    # open new connection with database
+    async with engine.begin() as conn:
+        # simple text quenue
+        await conn.execute(text("SELECT 1"))
     
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id)
