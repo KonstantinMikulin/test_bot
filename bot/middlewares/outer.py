@@ -28,7 +28,21 @@ class TrackAllUsersMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
+        event = cast(Message, event)
+        user_id = event.from_user.id # type:ignore
         
+        # update user`s data if user not in cache
+        if user_id not in self.cache:
+            session: AsyncSession = data['session']
+            await upsert_user(
+                session=session,
+                telegram_id=event.from_user.id,  # type:ignore
+                first_name=event.from_user.first_name,  # type:ignore
+                last_name=event.from_user.last_name,  # type:ignore
+            )
+            self.cache[user_id] = None
+        
+        return await handler(event, data)
 
 
 class IsUserOuterMiddleware(BaseMiddleware):
