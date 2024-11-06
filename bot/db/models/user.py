@@ -6,4 +6,10 @@ from bot.db.models.mixins import TimestampMixin
 
 
 class User(TimestampMixin, Base):
-    __tablename__ 
+    __tablename__ = 'users'
+    
+    telegram_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    first_name: Mapped[str] = mapped_column(String, nullable=False)
+    last_name: Mapped[str] = mapped_column(String, nullable=True)
+    
+    weights: Mapped[list['Weight']] = relationship(back_populates='user')
