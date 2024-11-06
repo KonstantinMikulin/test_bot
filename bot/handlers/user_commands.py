@@ -1,10 +1,14 @@
 import logging
+from random import randint
 
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from bot.keyboards import url_keyboard, create_records_keyboard
+from bot.db import add_weight
 
 logger = logging.getLogger(__name__)
 
@@ -12,22 +16,20 @@ logger = logging.getLogger(__name__)
 user_router = Router(name='user router')
 
 
-# command /start for everyone
-# @user_router.message(CommandStart())
-# async def cmd_user_start(message: Message):
-#     logger.info("Enter user`s /start handler")
-    
-#     await message.answer('You sent /start, user')
-    
-#     logger.debug("Exit user`s /start handler")
-
-
 # command /weight 'only' for user
 @user_router.message(Command(commands='weight'))
-async def cmd_weight(message: Message):
-    await message.answer('Your weight record was add to database, user!')
+async def cmd_weight(message: Message, session: AsyncSession):
+    weight = randint(70, 100)
     
+    await add_weight(
+        session=session,
+        telegram_id=message.from_user.id, # type:ignore
+        weight=weight
+    )
+    await message.answer(f'Your weight: {weight} kg added to database, user!')
     
+
+#TODO: make it works
 # command /measure 'only' for user
 @user_router.message(Command(commands="measure"))
 async def cmd_measure(message: Message):
