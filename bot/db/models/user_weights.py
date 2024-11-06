@@ -11,9 +11,7 @@ class Weight(TimestampMixin, Base):
     __tablename__ = 'weights'
     
     id: Mapped[UUID] = mapped_column(
-        Uuid,
-        primary_key=True,
-        server_default=text('get_random_uuid()')
+        Uuid, primary_key=True, server_default=text("gen_random_uuid()")
     )
     user_id: Mapped[int] = mapped_column(
         BigInteger,

@@ -6,13 +6,17 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.config_reader import get_config, BotConfig, DbConfig
-from bot.handlers import get_commands_routers, admin_router
+from bot.handlers import get_commands_routers
 from bot.handlers.main_menu import set_main_menu
-from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware, ChatActionInnerMiddleware
-from bot.db.tables import metadata
+from bot.db import Base
+from bot.middlewares import (
+    DbSessionMiddleware,
+    TrackAllUsersMiddleware
+    )
+
 
 async def main():
     logging.basicConfig(
@@ -38,13 +42,14 @@ async def main():
     
     # open new connection with database
     async with engine.begin() as conn:
-        # simple text quenue
+        # simple text query
         await conn.execute(text("SELECT 1"))
     
-    # create table
-    async with engine.begin() as conn:
-        await conn.run_sync(metadata.create_all)
-    
+    # create tables
+    async with engine.begin() as connection:
+        # await connection.run_sync(Base.metadata.drop_all)
+        await connection.run_sync(Base.metadata.create_all)
+        
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine)
     # creating bot object
@@ -56,13 +61,13 @@ async def main():
     # passing bot object to workflow data
     dp.workflow_data.update({'bot': bot, 'my_dp': dp})
     
+    # registering middlewares
+    Sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
+    dp.update.outer_middleware(DbSessionMiddleware(Sessionmaker))
+    dp.message.outer_middleware(TrackAllUsersMiddleware())
+    
     # connecting handlers`routers
     dp.include_routers(*get_commands_routers())
-    
-    # registering middlewares
-    dp.update.outer_middleware(IsUserOuterMiddleware())
-    admin_router.message.middleware(SomeInnerMiddleware())
-    admin_router.message.middleware(ChatActionInnerMiddleware())
     
     # set main menu
     await set_main_menu(bot)
