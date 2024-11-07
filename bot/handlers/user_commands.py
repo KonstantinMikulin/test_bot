@@ -1,14 +1,13 @@
 import logging
-from random import randint
 
-from aiogram import Router
-from aiogram.filters import Command
+from aiogram import Router, F
+from aiogram.filters import Command, StateFilter
 from aiogram.types import Message
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from aiogram.fsm.state import default_state
+from aiogram.fsm.context import FSMContext
 
 from bot.keyboards import url_keyboard, create_records_keyboard
-from bot.db import add_weight
+from bot.FSM import FSMAddWeightRecord
 
 logger = logging.getLogger(__name__)
 
@@ -16,18 +15,48 @@ logger = logging.getLogger(__name__)
 user_router = Router(name='user router')
 
 
+# /cancel commands for default state
+@user_router.message(Command(commands="cancel"), StateFilter(default_state))
+async def cmd_cancel_default(message: Message):
+    await message.answer('Nothing to cancel. You are out of FSM')
+
+
+# /cancel if user in some state 
+@user_router.message(Command(commands="cancel"), ~StateFilter(default_state))
+async def cmd_cancel_state(message: Message, state: FSMContext):
+    await message.answer("You are cancel weight record")
+    # reset state and clear any received data
+    await state.clear()
+
+
 # command /weight 'only' for user
-@user_router.message(Command(commands='weight'))
-async def cmd_weight(message: Message, session: AsyncSession):
-    weight = randint(70, 100)
+@user_router.message(Command(commands='weight'), StateFilter(default_state))
+async def cmd_weight(message: Message, state: FSMContext):
+    await message.answer('Send your weight, please')
+    # setup state to waiting for weight data
+    await state.set_state(FSMAddWeightRecord.fill_weight)
     
-    await add_weight(
-        session=session,
-        telegram_id=message.from_user.id, # type:ignore
-        weight=weight
-    )
-    await message.answer(f'Your weight: {weight} kg added to database, user!')
     
+# handler if weight was sent correct
+@user_router.message(StateFilter(FSMAddWeightRecord.fill_weight), F.text.isdigit())
+async def process_weight_sent(message: Message, state: FSMContext, user_dict: dict):
+    # store weight into storage
+    await state.update_data(weight=int(message.text)) # type:ignore
+    # commit data to temporary "db"
+    user_dict[message.from_user.id] = await state.get_data() # type:ignore
+    # stop FSM
+    await state.clear()
+    # send message abour success
+    await message.answer('You weight record was add')
+    print(user_dict)
+    
+
+
+# handler if weight was sent not correct
+@user_router.message(StateFilter(FSMAddWeightRecord.fill_weight))
+async def warning_not_weight(message: Message):
+    await message.answer('Send correct data, please')
+
 
 #TODO: make it works
 # command /measure 'only' for user

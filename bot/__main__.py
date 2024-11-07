@@ -55,7 +55,7 @@ async def main():
     storage = MemoryStorage()
     
     # Создаем "базу данных" пользователей
-    user_dict: dict[int, dict[str, str | int | bool]] = {} # type:ignore
+    user_dict: dict[int, dict[str, int]] = {} # type:ignore
     
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine, storage=storage)
