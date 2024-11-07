@@ -4,6 +4,7 @@ import logging
 from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
@@ -50,8 +51,15 @@ async def main():
         # await connection.run_sync(Base.metadata.drop_all)
         await connection.run_sync(Base.metadata.create_all)
     
+    # Инициализируем хранилище (создаем экземпляр класса MemoryStorage)
+    storage = MemoryStorage()
+    
+    # Создаем "базу данных" пользователей
+    user_dict: dict[int, dict[str, str | int | bool]] = {} # type:ignore
+    
     # creating dispatcher object
-    dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine)
+    dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine, storage=storage)
+    
     # creating bot object
     bot = Bot(
         token=bot_config.token.get_secret_value(),
@@ -59,7 +67,7 @@ async def main():
         )
     
     # passing bot object to workflow data
-    dp.workflow_data.update({'bot': bot, 'my_dp': dp})
+    dp.workflow_data.update({'bot': bot, 'my_dp': dp, 'user_dict': user_dict})
     
     # registering middlewares
     Sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
