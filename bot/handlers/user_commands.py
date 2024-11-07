@@ -6,8 +6,11 @@ from aiogram.types import Message
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from bot.keyboards import url_keyboard, create_records_keyboard
 from bot.FSM import FSMAddWeightRecord
+from bot.db.requests import add_weight
 
 logger = logging.getLogger(__name__)
 
@@ -39,16 +42,27 @@ async def cmd_weight(message: Message, state: FSMContext):
     
 # handler if weight was sent correct
 @user_router.message(StateFilter(FSMAddWeightRecord.fill_weight), F.text.isdigit())
-async def process_weight_sent(message: Message, state: FSMContext, user_dict: dict):
+async def process_weight_sent(
+    message: Message,
+    state: FSMContext,
+    session: AsyncSession
+):
     # store weight into storage
     await state.update_data(weight=int(message.text)) # type:ignore
-    # commit data to temporary "db"
-    user_dict[message.from_user.id] = await state.get_data() # type:ignore
+    
+    context_data = await state.get_data()
+    weight = int(context_data.get('weight'))  # type:ignore
+
+    # add weight to db
+    await add_weight(
+        session=session,
+        telegram_id=message.from_user.id,  # type:ignore
+        weight=weight,
+    )
     # stop FSM
     await state.clear()
     # send message abour success
-    await message.answer('You weight record was add')
-    print(user_dict)
+    await message.answer(f"Your weight: {weight} kg added to database, user!")
     
 
 

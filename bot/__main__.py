@@ -57,9 +57,6 @@ async def main():
     # Инициализируем хранилище (создаем экземпляр класса MemoryStorage)
     storage = RedisStorage(redis=redis)
     
-    # Создаем "базу данных" пользователей
-    user_dict: dict[int, dict[str, int]] = {} # type:ignore
-    
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine, storage=storage)
     
@@ -70,7 +67,7 @@ async def main():
         )
     
     # passing bot object to workflow data
-    dp.workflow_data.update({'bot': bot, 'my_dp': dp, 'user_dict': user_dict})
+    dp.workflow_data.update({'bot': bot, 'my_dp': dp})
     
     # registering middlewares
     Sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
