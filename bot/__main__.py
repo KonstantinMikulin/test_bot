@@ -49,7 +49,7 @@ async def main():
     async with engine.begin() as connection:
         # await connection.run_sync(Base.metadata.drop_all)
         await connection.run_sync(Base.metadata.create_all)
-        
+    
     # creating dispatcher object
     dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine)
     # creating bot object
