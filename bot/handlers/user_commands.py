@@ -63,7 +63,6 @@ async def process_weight_sent(
     await state.clear()
     # send message abour success
     await message.answer(f"Your weight: {weight} kg added to database, user!")
-    
 
 
 # handler if weight was sent not correct

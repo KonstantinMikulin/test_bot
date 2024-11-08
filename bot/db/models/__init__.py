@@ -1,5 +1,5 @@
 from .user import User
 from .user_weights import Weight
-from .user_measurement import Measurement
+from .user_measure_tail import MeasureTail
 
-__all__ = ["User", "Weight", "Measurement"]
+__all__ = ["User", "Weight", "MeasureTail"]
