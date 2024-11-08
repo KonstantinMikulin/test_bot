@@ -101,6 +101,6 @@ async def add_bicep(session: AsyncSession, telegram_id: int, bicep: int):
     :param bicep: объем талии пользователя
     """
 
-    new_bicep = MeasureHips(user_id=telegram_id, bicep=bicep)
+    new_bicep = MeasureBicep(user_id=telegram_id, bicep=bicep)
     session.add(new_bicep)
     await session.commit()

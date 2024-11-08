@@ -11,5 +11,6 @@ __all__ = [
     "MeasureWaist",
     "add_weight",
     "add_waist",
-    "add_hips"
+    "add_hips",
+    "add_bicep",
 ]
