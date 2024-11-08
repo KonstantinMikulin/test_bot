@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import insert as upsert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.db.models import User, Weight, MeasureBicep, MeasureHips, MeasureTail
+from bot.db.models import User, Weight, MeasureBicep, MeasureHips, MeasureWaist
 
 
 async def upsert_user(
@@ -61,11 +61,25 @@ async def add_weight(
 
 
 # request to add tail measurement to db
-async def add_tail(
+async def add_waist(
     session: AsyncSession,
     telegram_id: int,
-    tail: int
+    waist: int
     ):
+    """
+    Добавление записи объема талии пользователя
+    :param session: сессия СУБД
+    :param telegram_id: айди пользователя
+    :param waist: объем талии пользователя
+    """
+
+    new_waist = MeasureWaist(user_id=telegram_id, waist=waist)
+    session.add(new_waist)
+    await session.commit()
+
+
+# request to add hips measurement to db
+async def add_hips(session: AsyncSession, telegram_id: int, hips: int):
     """
     Добавление записи объема пользователя
     :param session: сессия СУБД
@@ -73,6 +87,6 @@ async def add_tail(
     :param tail: объем талии пользователя
     """
 
-    new_tail = MeasureTail(user_id=telegram_id, weight=tail)
-    session.add(new_tail)
+    new_hips = MeasureHips(user_id=telegram_id, weight=hips)
+    session.add(new_hips)
     await session.commit()
