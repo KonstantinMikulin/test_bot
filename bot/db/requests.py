@@ -1,11 +1,7 @@
-from typing import cast
-
-from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as upsert
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, joinedload
 
-from bot.db.models import User, Weight
+from bot.db.models import User, Weight, MeasureBicep, MeasureHips, MeasureTail
 
 
 async def upsert_user(
@@ -43,6 +39,7 @@ async def upsert_user(
     await session.commit()
 
 
+# request to add user weight to db
 async def add_weight(
     session: AsyncSession,
     telegram_id: int,
@@ -60,4 +57,22 @@ async def add_weight(
         weight=weight
     )
     session.add(new_weight)
+    await session.commit()
+
+
+# request to add tail measurement to db
+async def add_tail(
+    session: AsyncSession,
+    telegram_id: int,
+    tail: int
+    ):
+    """
+    Добавление записи объема пользователя
+    :param session: сессия СУБД
+    :param telegram_id: айди пользователя
+    :param tail: объем талии пользователя
+    """
+
+    new_tail = MeasureTail(user_id=telegram_id, weight=tail)
+    session.add(new_tail)
     await session.commit()
