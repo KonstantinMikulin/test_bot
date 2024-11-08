@@ -90,3 +90,17 @@ async def add_hips(session: AsyncSession, telegram_id: int, hips: int):
     new_hips = MeasureHips(user_id=telegram_id, hips=hips)
     session.add(new_hips)
     await session.commit()
+
+
+# request to add bicep measurement to db
+async def add_bicep(session: AsyncSession, telegram_id: int, bicep: int):
+    """
+    Добавление записи объема пользователя
+    :param session: сессия СУБД
+    :param telegram_id: айди пользователя
+    :param bicep: объем талии пользователя
+    """
+
+    new_bicep = MeasureHips(user_id=telegram_id, bicep=bicep)
+    session.add(new_bicep)
+    await session.commit()
