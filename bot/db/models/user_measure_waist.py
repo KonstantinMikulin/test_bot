@@ -7,8 +7,8 @@ from bot.db import Base
 from bot.db.models.mixins import TimestampMixin
 
 
-class MeasureTail(TimestampMixin, Base):
-    __tablename__ = "measurements_tail"
+class MeasureWaist(TimestampMixin, Base):
+    __tablename__ = "measurements_waist"
 
     id: Mapped[UUID] = mapped_column(
         Uuid, primary_key=True, server_default=text("gen_random_uuid()")
@@ -18,4 +18,4 @@ class MeasureTail(TimestampMixin, Base):
     )
     measurement: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    user: Mapped["User"] = relationship(back_populates="measurements_tail")  # type:ignore  # noqa: F821
+    user: Mapped["User"] = relationship(back_populates="measurements_waist")  # type:ignore  # noqa: F821

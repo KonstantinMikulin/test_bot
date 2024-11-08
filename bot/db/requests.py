@@ -84,9 +84,9 @@ async def add_hips(session: AsyncSession, telegram_id: int, hips: int):
     Добавление записи объема пользователя
     :param session: сессия СУБД
     :param telegram_id: айди пользователя
-    :param tail: объем талии пользователя
+    :param hips: объем талии пользователя
     """
 
-    new_hips = MeasureHips(user_id=telegram_id, weight=hips)
+    new_hips = MeasureHips(user_id=telegram_id, hips=hips)
     session.add(new_hips)
     await session.commit()
