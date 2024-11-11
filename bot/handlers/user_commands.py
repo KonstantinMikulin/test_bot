@@ -27,7 +27,7 @@ async def cmd_cancel_default(message: Message):
 # /cancel if user in some state 
 @user_router.message(Command(commands="cancel"), ~StateFilter(default_state))
 async def cmd_cancel_state(message: Message, state: FSMContext):
-    await message.answer("You are cancel weight record")
+    await message.answer("You are cancel FSM")
     # reset state and clear any received data
     await state.clear()
 
@@ -69,13 +69,6 @@ async def process_weight_sent(
 @user_router.message(StateFilter(FSMAddWeightRecord.fill_weight))
 async def warning_not_weight(message: Message):
     await message.answer('Send correct data, please')
-
-
-#TODO: make it works
-# command /measure 'only' for user
-@user_router.message(Command(commands="measure"))
-async def cmd_measure(message: Message):
-    await message.answer("Your measure record was add to database, user!")
 
 
 # command for /diet for everyone

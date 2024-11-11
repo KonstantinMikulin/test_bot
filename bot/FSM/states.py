@@ -6,6 +6,7 @@ class FSMAddWeightRecord(StatesGroup):
 
 
 class FSMAddMeasurmentRecord(StatesGroup):
-    fill_tail = State()
+    fill_waist = State()
     fill_hips = State()
     fill_bicep = State()
+    fill_done = State()

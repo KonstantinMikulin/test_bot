@@ -4,6 +4,7 @@ import logging
 from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
@@ -15,8 +16,10 @@ admin_router = Router(name="admin router")
 
 # /start command add data about user into db
 @admin_router.message(CommandStart())
-async def cmd_admin_start(message: Message, db_engine: AsyncEngine):
+async def cmd_admin_start(message: Message, state:FSMContext):
     logger.info("Enter admin`s /start handler")
+    
+    await state.clear()
     
     await message.answer('<b>Admin</b>, you sent /start! Welcome!')
     

@@ -73,7 +73,7 @@ async def add_waist(
     :param waist: объем талии пользователя
     """
 
-    new_waist = MeasureWaist(user_id=telegram_id, waist=waist)
+    new_waist = MeasureWaist(user_id=telegram_id, measurement=waist)
     session.add(new_waist)
     await session.commit()
 
@@ -87,7 +87,7 @@ async def add_hips(session: AsyncSession, telegram_id: int, hips: int):
     :param hips: объем талии пользователя
     """
 
-    new_hips = MeasureHips(user_id=telegram_id, hips=hips)
+    new_hips = MeasureHips(user_id=telegram_id, measurement=hips)
     session.add(new_hips)
     await session.commit()
 
@@ -101,6 +101,6 @@ async def add_bicep(session: AsyncSession, telegram_id: int, bicep: int):
     :param bicep: объем талии пользователя
     """
 
-    new_bicep = MeasureBicep(user_id=telegram_id, bicep=bicep)
+    new_bicep = MeasureBicep(user_id=telegram_id, measurement=bicep)
     session.add(new_bicep)
     await session.commit()
