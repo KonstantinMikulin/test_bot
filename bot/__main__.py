@@ -69,13 +69,13 @@ async def main():
     # passing bot object to workflow data
     dp.workflow_data.update({'bot': bot, 'my_dp': dp})
     
+    # connecting handlers`routers
+    dp.include_routers(*get_commands_routers())
+    
     # registering middlewares
     Sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     dp.update.outer_middleware(DbSessionMiddleware(Sessionmaker))
     dp.message.outer_middleware(TrackAllUsersMiddleware())
-    
-    # connecting handlers`routers
-    dp.include_routers(*get_commands_routers())
     
     # set main menu
     await set_main_menu(bot)

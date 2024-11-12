@@ -34,7 +34,7 @@ async def cmd_cancel_state(message: Message, state: FSMContext):
 
 # command /weight 'only' for user
 @user_router.message(Command(commands='weight'), StateFilter(default_state))
-async def cmd_weight(message: Message, state: FSMContext):
+async def cmd_weight(message: Message, state: FSMContext, admin_id):
     await message.answer('Send your weight, please')
     # setup state to waiting for weight data
     await state.set_state(FSMAddWeightRecord.fill_weight)

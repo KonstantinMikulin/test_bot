@@ -106,12 +106,15 @@ async def process_bicep_sent(
         bicep=bicep,
     )
     
+    # stop FSM
+    await state.clear()
+
     # send message
     await message.answer(
         f"Your bicep: {message.text} cm added to database, user!\n"
         f"Thank you"
     )
-
+    
 
 # handler if data of waist, hips or bicep was sent not correct
 @user_measure_router.message(
