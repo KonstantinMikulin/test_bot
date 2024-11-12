@@ -4,8 +4,9 @@ import logging
 from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
-from bot.filters import IsAdminFilter
+from sqlalchemy.ext.asyncio.engine import AsyncEngine
 
 logger = logging.getLogger(__name__)
 
@@ -13,15 +14,25 @@ logger = logging.getLogger(__name__)
 admin_router = Router(name="admin router")
 
 
-@admin_router.message(CommandStart(), IsAdminFilter())
-async def cmd_admin_start(message: Message, some_new):
+# /start command add data about user into db
+@admin_router.message(CommandStart())
+async def cmd_admin_start(message: Message, state:FSMContext):
     logger.info("Enter admin`s /start handler")
-    logger.info(f"This is info from inner middleware: '{some_new}'")
+    
+    await state.clear()
     
     await message.answer('<b>Admin</b>, you sent /start! Welcome!')
     
     logger.info("Exit admin`s /start handler")
     
+
+#TODO: make it works
+@admin_router.message(Command(commands="deleteme"))
+async def cmd_delteme(message: Message, db_engine: AsyncEngine):
+    await message.answer("Your data was delete")
+
+
+# TODO: make it works
 # command /test 'only' for admin
 @admin_router.message(
     Command(commands="stats"),

@@ -4,12 +4,20 @@ import logging
 from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.redis import RedisStorage, Redis
 
-from bot.config_reader import get_config, BotConfig
-from bot.handlers import get_commands_routers, admin_router
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from bot.config_reader import get_config, BotConfig, DbConfig
+from bot.handlers import get_commands_routers
 from bot.handlers.main_menu import set_main_menu
+from bot.db import Base
+from bot.middlewares import (
+    DbSessionMiddleware,
+    TrackAllUsersMiddleware
+    )
 
-from bot.middlewares import IsUserOuterMiddleware, SomeInnerMiddleware, ChatActionInnerMiddleware
 
 async def main():
     logging.basicConfig(
@@ -21,11 +29,37 @@ async def main():
     logger = logging.getLogger(__name__)
     logger.info('Bot starts')
     
-    # creating config 'object'
+    # creating bot`s config 'object'
     bot_config = get_config(BotConfig, 'bot')
     
+    # create database config 'object'
+    db_config = get_config(DbConfig, "db")
+    
+    # create sqlachemy engine
+    engine = create_async_engine(
+        url=str(db_config.dsn),
+        echo=db_config.is_echo
+    )
+    
+    # open new connection with database
+    async with engine.begin() as conn:
+        # simple text query
+        await conn.execute(text("SELECT 1"))
+    
+    # create tables
+    async with engine.begin() as connection:
+        # await connection.run_sync(Base.metadata.drop_all)
+        await connection.run_sync(Base.metadata.create_all)
+    
+    # Инициализируем Redis
+    redis = Redis(host='localhost')
+    
+    # Инициализируем хранилище (создаем экземпляр класса MemoryStorage)
+    storage = RedisStorage(redis=redis)
+    
     # creating dispatcher object
-    dp = Dispatcher(admin_id=bot_config.admin_id)
+    dp = Dispatcher(admin_id=bot_config.admin_id, db_engine=engine, storage=storage)
+    
     # creating bot object
     bot = Bot(
         token=bot_config.token.get_secret_value(),
@@ -39,9 +73,9 @@ async def main():
     dp.include_routers(*get_commands_routers())
     
     # registering middlewares
-    dp.update.outer_middleware(IsUserOuterMiddleware())
-    admin_router.message.middleware(SomeInnerMiddleware())
-    admin_router.message.middleware(ChatActionInnerMiddleware())
+    Sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
+    dp.update.outer_middleware(DbSessionMiddleware(Sessionmaker))
+    dp.message.outer_middleware(TrackAllUsersMiddleware())
     
     # set main menu
     await set_main_menu(bot)

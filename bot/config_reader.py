@@ -2,7 +2,7 @@ from functools import lru_cache
 from os import getenv
 from typing import TypeVar, Type
 
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel, SecretStr, PostgresDsn
 from yaml import load  # type:ignore
 
 try:
@@ -16,6 +16,11 @@ ConfigType = TypeVar("ConfigType", bound=BaseModel)
 class BotConfig(BaseModel):
     token: SecretStr
     admin_id: int
+    
+    
+class DbConfig(BaseModel):
+    dsn: PostgresDsn
+    is_echo: bool
 
 
 @lru_cache(maxsize=1)
@@ -26,6 +31,7 @@ def parse_config_file() -> dict:
         error = "Could not find settings file"
         raise ValueError(error)
 
+    # Чтение файла, попытка распарсить его как YAML
     with open(file_path, "rb") as file:
         config_data = load(file, Loader=SafeLoader)
 
